@@ -22,11 +22,11 @@ import os
 import unidecode
 
 #-----------------------------------------
-#manejo de las cifras
+#manejo de las cifras // no lo admite render.com
 #-----------------------------------------v
-import locale
+#import locale
 #establecer la configuración regional de USA
-locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+#locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 # ----------------------------------------
 # Variables de entorno
@@ -465,10 +465,10 @@ async def get_director(director: str):
                 "Título": titulo,
                 "Año de lanzamiento": anio,
                 "Retorno de la película": round(return_, 2),
-                #"Costo de la película": budget,
-                "Costo de la película": locale.currency(budget, grouping=True),
-                #"Ganancia de la película": revenue
-                "Ganancia de la película": locale.currency(revenue, grouping=True),
+                "Costo de la película": budget,
+                #"Costo de la película": locale.currency(budget, grouping=True),
+                "Ganancia de la película": revenue
+                #"Ganancia de la película": locale.currency(revenue, grouping=True),
             })
         client.close()
         # El retorno del director fue calculado con el acumulado de los revenue y budget.
