@@ -3,10 +3,12 @@
 # ----------------------------------------
 
 import zipfile
+import gzip
 import pandas as pd
 from datetime import datetime, time
 import ast
 import json
+import os
 
 
 # ----------------------------------------
@@ -40,7 +42,7 @@ def zip_to_dataframe(file_path):
 
         if file_extension == 'csv':
             with zip_ref.open(file_list[0]) as file:
-                df = pd.read_csv(file)
+                df = pd.read_csv(file, low_memory=False)
         elif file_extension == 'xlsx':
             with zip_ref.open(file_list[0]) as file:
                 df = pd.read_excel(file)
@@ -104,3 +106,46 @@ def convert_to_json(texto):
     texto_json = json.dumps(estructura_datos)
     objeto_json = json.loads(texto_json)
     return objeto_json
+
+# ----------------------------------------
+# Funciones de Carga (L) 
+# ----------------------------------------
+
+'''def create_zip_file(ruta_archivo_csv, ruta_archivo_zip, nombre_archivo_zip):
+    """
+    Crea un archivo .zip y comprime un archivo CSV dentro de él.
+
+    Args:
+        ruta_archivo_csv (str): Ruta del archivo CSV que se va a comprimir.
+        ruta_archivo_zip (str): Ruta donde se creará el archivo .zip resultante.
+        nombre_archivo_zip (str): Nombre del archivo .zip resultante.
+
+    Returns:
+        None
+    """
+    with zipfile.ZipFile(ruta_archivo_zip, 'w') as archivo_zip:
+        archivo_zip.write(ruta_archivo_csv, arcname=nombre_archivo_zip)'''
+
+
+def create_zip_file(ruta_archivo_csv, ruta_archivo_zip, nombre_archivo_zip):
+    """
+    Crea un archivo .zip y comprime un archivo CSV dentro de él utilizando gzip.
+
+    Args:
+        ruta_archivo_csv (str): Ruta del archivo CSV que se va a comprimir.
+        ruta_archivo_zip (str): Ruta donde se creará el archivo .zip resultante.
+        nombre_archivo_zip (str): Nombre del archivo .zip resultante.
+
+    Returns:
+        None
+    """
+    archivo_zip_temporal = f"{ruta_archivo_zip}.tmp"
+
+    with gzip.open(archivo_zip_temporal, 'wb') as archivo_comprimido:
+        archivo_comprimido.write(open(ruta_archivo_csv, 'rb').read())
+
+    with zipfile.ZipFile(ruta_archivo_zip, 'w') as archivo_zip:
+        archivo_zip.write(archivo_zip_temporal, arcname=nombre_archivo_zip)
+
+    # Eliminar el archivo temporal
+    os.remove(archivo_zip_temporal)
