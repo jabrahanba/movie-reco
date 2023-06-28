@@ -10,6 +10,8 @@
 #comparar el primer dataframe con el segundo(con los cambios de hoy)
 #revisar parches, 212
 #revisar si hay algo mas para requirements creo que no
+#como hacer para que fastapi no inactive el deployment
+# https://www.themoviedb.org/talk/5aeaaf56c3a3682ddf0010de si voy a trabajar con las imagenes
 
 # ----------------------------------------
 # Librerias y Framework

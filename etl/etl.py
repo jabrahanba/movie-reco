@@ -5,7 +5,7 @@ import ast
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
-import ELTfunctions as etl
+import ETLfunctions as etl
 
 load_dotenv("../config.env")
 
@@ -30,12 +30,11 @@ movie = movie.drop(movie[pd.to_numeric(movie['belongs_to_collection'], errors='c
 movie = movie.dropna(subset=['release_date'])
 
 #Eliminar las columnas que no serán utilizadas
-columnas_a_eliminar = ["video", "adult", "original_title", "poster_path", "homepage"]#,"imdb_id",]
+columnas_a_eliminar = ["video", "adult", "poster_path", "homepage"]#,"imdb_id",]
 movie = movie.drop(columnas_a_eliminar, axis=1)
 
 #Cambiar tipo de datos númericos
 movie[['budget','revenue', 'runtime', 'popularity']]= movie[['budget','revenue', 'runtime', 'popularity']].astype('float32')
-movie['id'] = movie['id'].astype('int')
 
 #Llenar campos vacios o incorrectos de peliculas cuyo nombre es una fecha,
 # esta información se extrajo de la pagina de IMDB:
@@ -95,7 +94,7 @@ overview_dict = overviews.set_index('id')['overview'].to_dict()
 movie['overview'].fillna(movie['id'].map(overview_dict), inplace=True)
 
 #Eliminar la columna imdb_id que ya no vamos a usar.
-movie = movie.drop('imdb_id', axis=1)
+movie = movie.drop(['imdb_id', 'original_title'], axis=1)
 
 #transformaciones para poder cargar a mongoDB.
 #Diccionarios anidados:
@@ -104,7 +103,6 @@ movie['belongs_to_collection'] = movie['belongs_to_collection'].apply(lambda x: 
 columnas = ['genres','production_companies','production_countries', 'spoken_languages']
 for col in columnas:
     movie[col] = movie[col].apply(lambda x: etl.transform_columns(x, col))
-
 
 ### 3.3 credit:
 
@@ -123,6 +121,7 @@ credit['id'] = credit['id'].astype('int')
 credit['cast'] = credit['cast'].apply(etl.convert_to_json)
 credit['crew'] = credit['crew'].apply(etl.convert_to_json)
 
+
 ### 4- Carga:
 
 ### 4.1 Merge:
@@ -130,7 +129,6 @@ credit['crew'] = credit['crew'].apply(etl.convert_to_json)
 #Combinar/unir ambos datasets:
 movie['id'] = movie['id'].astype('int64')
 df = movie.merge(credit, on='id', how='left', validate='one_to_one')
-
 
 ### 4.2 Crear csv para usar en el modelo de ML:
 df.to_csv("../model/df.csv", index=False)
@@ -142,7 +140,6 @@ nombre_zip = "df.csv"
 
 etl.create_zip_file(path_csv, path_zip, nombre_zip)
 
-'''
 ### 4.3 Conectar con mongoDB:
 
 #Variables de entorno:
@@ -160,4 +157,3 @@ with MongoClient(url) as client:
     # Carga a MongoDB:
     datos_json = df.to_dict(orient='records')
     collection.insert_many(datos_json)
-'''

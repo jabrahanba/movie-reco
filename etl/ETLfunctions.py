@@ -10,7 +10,6 @@ import ast
 import json
 import os
 
-
 # ----------------------------------------
 # Funciones de extracción (E) 
 # ----------------------------------------

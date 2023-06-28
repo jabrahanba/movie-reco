@@ -180,6 +180,8 @@ ENV/
 env.bak/
 venv.bak/
 mreco_venv/
+/mreco_venv
+mreco_venv
 
 # Spyder project settings
 .spyderproject
