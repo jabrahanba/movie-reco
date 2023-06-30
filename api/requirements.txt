@@ -7,4 +7,4 @@ unidecode
 joblib
 scikit-learn 
 nltk
-scipy #Lo pide render
+scipy==1.11.0 #Lo pide render
