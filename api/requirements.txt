@@ -7,3 +7,4 @@ unidecode
 joblib
 scikit-learn 
 nltk
+scipy #Lo pide render
