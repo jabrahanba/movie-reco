@@ -1,5 +1,6 @@
 import APIfunctions as f
 from fastapi import FastAPI, HTTPException
+import pandas as pd
 
 #Definir la aplicación
 app = FastAPI()
@@ -94,6 +95,14 @@ async def consulta6(director: str):
         raise HTTPException(status_code=400, detail=str(e))
     
 # --------------------------------------------
+
+#Data lo coloco acá para ver si mejora el rendimiento.
+    pelis = pd.DataFrame
+    pelis = pd.read_csv('../model/df_resize.csv', index_col=False) 
+    df = pd.read_csv('../model/df_model.csv', index_col=False) 
+    trained_model_filename = '../model/trained_model.joblib' 
+    vectorizer_filename = '../model/vectorizer.joblib'
+    column = column = 'stemming_unique'
 
 @app.get("/recomendacion/{title}")
 async def consulta7(title: str):

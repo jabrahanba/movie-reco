@@ -129,9 +129,11 @@ credit['crew'] = credit['crew'].apply(etl.convert_to_json)
 #Combinar/unir ambos datasets:
 movie['id'] = movie['id'].astype('int64')
 df = movie.merge(credit, on='id', how='left', validate='one_to_one')
+df_to_compress = pd.DataFrame()
+df_to_compress = df[['id','title','overview','release_year','belongs_to_collection','genres','cast','crew','production_companies']]
 
 ### 4.2 Crear csv para usar en el modelo de ML:
-#df.to_csv("../model/df.csv", index=False) #Solo voy a necesitar el comprimido
+df_to_compress.to_csv("../model/df.csv", index=False) #Solo voy a necesitar el comprimido
 
 #convertirlo a zipp
 path_csv = "../model/df.csv"

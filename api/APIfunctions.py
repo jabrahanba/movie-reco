@@ -500,13 +500,13 @@ async def recomendacion(title:str):
     Returns:
         dict: Diccionario con las películas recomendadas.
     """
-    #Data
+    '''#Data
     pelis = pd.DataFrame
     pelis = pd.read_csv('../model/df_resize.csv', index_col=False) 
     df = pd.read_csv('../model/df_model.csv', index_col=False) 
     trained_model_filename = '../model/trained_model.joblib' 
     vectorizer_filename = '../model/vectorizer.joblib'
-    column = column = 'stemming_unique'
+    column = column = 'stemming_unique'''
 
     #Obtener index:
     pelis['title_lower'] = pelis['title'].str.lower()
