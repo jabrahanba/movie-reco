@@ -5,5 +5,5 @@ fastapi
 uvicorn
 unidecode
 joblib
-#scikit-learn para el modelo
-#nltk
+scikit-learn 
+nltk
