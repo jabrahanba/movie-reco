@@ -22,6 +22,8 @@ from dotenv import load_dotenv
 import re
 import os
 import unidecode
+import pandas as pd
+import joblib
 
 #-----------------------------------------
 #manejo de las cifras // no lo admite render.com
@@ -287,7 +289,7 @@ async def votos_titulo(titulo: str):
         
 
 
-# Funcionabilidad número 5.1:
+# Funcionabilidad número 5:
 async def get_actor(name_actor: str):
     """
     Obtiene información sobre un actor específico.
@@ -347,6 +349,7 @@ async def get_actor(name_actor: str):
         
 
 
+'''Está función la creé de más. No estará en el deploy
 # Funcionabilidad número 5.2: teniendo en cuenta: La definición no deberá considerar directores
 async def get_actor2(name_actor: str):
     """
@@ -417,7 +420,7 @@ async def get_actor2(name_actor: str):
             "Promedio de retorno por peliculas con retorno": round((return_acum)/ return_greater_zero, 2)}
     else:
         client.close()
-        raise ValueError("No se encontraron resultados para el actor/actriz especificado.")
+        raise ValueError("No se encontraron resultados para el actor/actriz especificado.")'''
         
 
 
@@ -486,3 +489,55 @@ async def get_director(director: str):
     else:
         client.close()
         raise ValueError("No se encontraron resultados para el director especificado.")
+    
+
+# Funcionabilidad número 7:
+async def recomendacion(title:str):
+    """
+    Recomienda películas similares en base a un título dado.
+    Args:
+        title (str): Título de la película.
+    Returns:
+        dict: Diccionario con las películas recomendadas.
+    """
+    #Data
+    pelis = pd.DataFrame
+    pelis = pd.read_csv('../model/df_resize.csv', index_col=False) 
+    df = pd.read_csv('../model/df_model.csv', index_col=False) 
+    trained_model_filename = '../model/trained_model.joblib' 
+    vectorizer_filename = '../model/vectorizer.joblib'
+    column = column = 'stemming_unique'
+
+    #Obtener index:
+    pelis['title_lower'] = pelis['title'].str.lower()
+    title = title.lower()
+    title_index = pelis[pelis['title_lower'] == title].index.tolist()
+    
+    if not title_index:
+        raise ValueError("La película no se encuentra en la base de datos.")
+    else:
+        movie_id = title_index[0]  # Devolver el primer índice encontrado
+
+    # Cargar el modelo entrenado desde el archivo
+    knn = joblib.load(trained_model_filename)
+        # Cargar el vectorizador
+    vectorizer = joblib.load(vectorizer_filename)
+
+    # Obtener las características de la película de interés
+    df[column] = df[column].apply(lambda x: x.replace("[", "").replace("]", "").replace("'", "").replace(",", " "))
+    pelicula_interes = df.iloc[movie_id][column]
+    pelicula_interes_vec = vectorizer.transform([pelicula_interes])
+
+    # Calcular distancias utilizando el modelo cargado
+    distances, indices = knn.kneighbors(pelicula_interes_vec)
+    indices_similares = indices[0][1:]  # Excluir la película de interés
+    peliculas_similares = df.iloc[indices_similares]
+    indices = peliculas_similares.index
+
+    # Obtener los títulos de las películas recomendadas
+    recommended_movies = pelis.loc[indices, 'title']
+    movie_dict = {}
+    for i, movie in enumerate(recommended_movies, 1):
+        movie_dict[str(i)] = movie
+
+    return {'peliculas recomendadas': movie_dict}

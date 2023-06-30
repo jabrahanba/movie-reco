@@ -69,20 +69,20 @@ async def consulta4(titulo: str):
 # --------------------------------------------
 
 @app.get("/get_actor/{name_actor}")
-async def consulta5_1(name_actor: str):
+async def consulta5(name_actor: str):
     try:
         return await f.get_actor(name_actor)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 # --------------------------------------------
-
-@app.get("/get_actor2/{name_actor}")
+#Esta la hice adicionalmente para devolver las peliculas por actor sin contar en las que el actor fue director también.
+'''@app.get("/get_actor2/{name_actor}")
 async def consulta5_2(name_actor: str):
     try:
         return await f.get_actor2(name_actor)
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e))'''
     
 # --------------------------------------------
 
@@ -90,5 +90,14 @@ async def consulta5_2(name_actor: str):
 async def consulta6(director: str):
     try:
         return await f.get_director(director)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+# --------------------------------------------
+
+@app.get("/recomendacion/{title}")
+async def consulta7(title: str):
+    try:
+        return await f.recomendacion(title)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
