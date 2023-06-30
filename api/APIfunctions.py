@@ -1,18 +1,3 @@
-#recordar colocar las tecnologias en el readme como codineric https://www.youtube.com/watch?v=21frhbVxHiE
-#tambien colocarlo en inspiracion: 
-#https://www.youtube.com/watch?v=J0y2tjBz2Ao&t=903s
-
-
-#REVISAR LOS QUERY y los retornos en el dataframe que se genere
-#después de cargar el nuevo archivo revisar el retorno de esta pelicula porque esta raro: Three Days of the Condor y de esta: The Way We Were parace que le estuviera asignado un 1 al costo o algo asi
-#algo parecido sucede con Emma Watson... #chequear lo de return si esta haciendo bien las divisiones y recordar lo de solo tomar las peliculas con dato
-#chequear los nombres de la función ya en api y averiguar lo de sync
-#comparar el primer dataframe con el segundo(con los cambios de hoy)
-#revisar parches, 212
-#revisar si hay algo mas para requirements creo que no
-#como hacer para que fastapi no inactive el deployment
-# https://www.themoviedb.org/talk/5aeaaf56c3a3682ddf0010de si voy a trabajar con las imagenes
-
 # ----------------------------------------
 # Librerias y Framework
 # ----------------------------------------
